@@ -11,6 +11,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.dependencies import metadata_tags
 
+from app.routers import dice
+
 DB_DIR = os.path.join("app", "db")
 DB_PATH = os.path.join(DB_DIR, "db.json")
 
@@ -23,6 +25,8 @@ app = FastAPI(
     version="0.0.1",
     openapi_tags=metadata_tags.tags_metadata
 )
+
+app.include_router(dice.router)
 
 
 def init_db():

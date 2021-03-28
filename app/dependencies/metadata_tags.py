@@ -5,5 +5,8 @@ tags_metadata = [
             "description": "Game rules",
             "url": "https://www.ultraboardgames.com/masterpiece/game-rules.php"
         }
+    },
+    {
+        "name": "Dice Functions"
     }
 ]
