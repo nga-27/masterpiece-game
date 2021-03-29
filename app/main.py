@@ -57,6 +57,11 @@ def init_resources():
         db = json.load(resf)
         resf.close()
 
+    base_url = db['config']['base_url']
+    for painting in db['art']:
+        db['art'][painting]['url'] = os.path.join(
+            base_url, db['art'][painting]['filename'])
+
     return db
 
 
@@ -71,7 +76,7 @@ def check_heartbeat():
 
 @app.get("/fetch_paintings", tags=["Health"])
 def fetch_paintings():
-    return RESOURCES
+    return RESOURCES['art']
 
 
 @app.get("/dl", tags=["Health"])
