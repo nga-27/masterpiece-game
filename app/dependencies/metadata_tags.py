@@ -8,5 +8,8 @@ tags_metadata = [
     },
     {
         "name": "Dice Functions"
+    },
+    {
+        "name": "Users"
     }
 ]
