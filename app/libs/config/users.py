@@ -1,7 +1,10 @@
+import uuid
+
 from app import main
 
-from app.libs.config.db import post_to_db, delete_from_db
-from app.libs.utils.classes import User
+from app.libs.config.db import post_to_db, delete_from_db, patch_to_db, get_from_db
+from app.libs.utils.classes import User, NewPosition
+from app.libs.actions.dice import new_roll_position
 
 
 def get_users():
@@ -38,6 +41,38 @@ def get_characters():
     return main.RESOURCES.get('characters', {})
 
 
+def map_to_user(user_obj: dict):
+    new_user = User(
+        name=user_obj.get('name', ''),
+        uuid=user_obj.get('uuid', str(uuid.uuid4())),
+        character=user_obj.get('character', ''),
+        character_id=user_obj.get('character_id', 'z0'),
+        current_position=user_obj.get('current_position', 0),
+        current_roll=user_obj.get('current_roll', 0),
+        paintings=user_obj.get('paintings', []),
+        current_cash=user_obj.get('current_cash', 0)
+    )
+    return new_user
+
+
 def remove_user(name):
     item, code = delete_from_db('users', name)
     return {"value": item}, code
+
+
+#################
+
+def user_move_piece(name: str, roll: int, direction: str):
+    user, code = get_from_db('users', name)
+    if code != 200:
+        return {"value": user}, code
+    old_position = user.get('current_position', 0)
+    boolean, value = new_roll_position(roll, direction, old_position)
+    if not boolean:
+        return {"value": value}, 400
+    user['current_position'] = value
+    user['curent_roll'] = roll
+    new_user = map_to_user(user)
+
+    res, code = patch_to_db('users', new_user, name)
+    return {"value": res}, code

@@ -27,3 +27,9 @@ class Transaction(BaseModel):
     seller: Optional[User]
     value: int
     uuid: Optional[str] = str(uuid.uuid4())
+
+
+class NewPosition(BaseModel):
+    name: str
+    roll_value: int
+    move_direction: str

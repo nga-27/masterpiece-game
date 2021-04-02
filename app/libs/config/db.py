@@ -63,22 +63,7 @@ def init_resources():
 
     return db
 
-
 ##############################################
-
-
-def post_to_db(table: str, object_to_post, store_key):
-    if stringify_for_json(store_key) in main.DB[table]:
-        return main.DB, 409
-
-    store_key = stringify_for_json(store_key)
-    main.DB[table][store_key] = {}
-    for item in object_to_post:
-        main.DB[table][store_key][stringify_for_json(
-            item[0])] = stringify_for_json(item[1])
-
-    update_db(main.DB)
-    return main.DB[table][store_key], 201
 
 
 def update_db(db_obj):
@@ -86,19 +71,6 @@ def update_db(db_obj):
         json.dump(db_obj, dbf)
         dbf.close()
     return
-
-
-def delete_from_db(table: str, store_key):
-    if stringify_for_json(store_key) not in main.DB[table]:
-        return "Record not found", 404
-
-    store_key = stringify_for_json(store_key)
-    try:
-        main.DB[table].pop(store_key)
-        update_db(main.DB)
-    except:
-        return f"Error in deleting {store_key}", 500
-    return "Success", 201
 
 
 def read_db():
@@ -115,6 +87,47 @@ def stringify_for_json(item):
         item = str(item)
         item.replace("'", '"')
     return item
+
+##############################################
+
+
+def post_to_db(table: str, object_to_post, store_key, patch=False):
+    if stringify_for_json(store_key) in main.DB[table] and not patch:
+        return "Record already exists", 409
+
+    store_key = stringify_for_json(store_key)
+    main.DB[table][store_key] = {}
+    for item in object_to_post:
+        main.DB[table][store_key][stringify_for_json(
+            item[0])] = stringify_for_json(item[1])
+
+    update_db(main.DB)
+    return main.DB[table][store_key], 201
+
+
+def delete_from_db(table: str, store_key):
+    if stringify_for_json(store_key) not in main.DB[table]:
+        return "Record not found", 404
+
+    store_key = stringify_for_json(store_key)
+    try:
+        main.DB[table].pop(store_key)
+        update_db(main.DB)
+    except:
+        return f"Error in deleting {store_key}", 500
+    return "Success", 201
+
+
+def get_from_db(table: str, store_key):
+    if stringify_for_json(store_key) not in main.DB[table]:
+        return "Record not found", 404
+    return main.DB[table][store_key], 200
+
+
+def patch_to_db(table: str, object_to_patch, store_key):
+    if stringify_for_json(store_key) not in main.DB[table]:
+        return "Record not found", 404
+    return post_to_db(table, object_to_patch, store_key, patch=True)
 
 ##############################################
 
