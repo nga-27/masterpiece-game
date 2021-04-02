@@ -39,4 +39,5 @@ def get_characters():
 
 
 def remove_user(name):
-    return delete_from_db('users', name)
+    item, code = delete_from_db('users', name)
+    return {"value": item}, code

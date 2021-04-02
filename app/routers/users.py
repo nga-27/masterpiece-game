@@ -27,6 +27,9 @@ def get_character_list():
     return get_characters()
 
 
-@router.delete("/{name}", tags=["Users"])
+@router.delete("/{name}", tags=["Users"], status_code=201)
 def delete_user(name: str):
-    return remove_user(name)
+    res, code = remove_user(name)
+    if code != 201:
+        raise HTTPException(status_code=code, detail=res['value'])
+    return res

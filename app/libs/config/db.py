@@ -95,6 +95,7 @@ def delete_from_db(table: str, store_key):
     store_key = stringify_for_json(store_key)
     try:
         main.DB[table].pop(store_key)
+        update_db(main.DB)
     except:
         return f"Error in deleting {store_key}", 500
     return "Success", 201
