@@ -12,7 +12,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from app.dependencies import metadata_tags
 
 from app.routers import dice, users
-from app.libs.config.db import init_db, DB_DIR, fetch_paintings_from_db
+from app.libs.config.db import init_db, init_resources, fetch_paintings_from_db, load_db
 
 app = FastAPI(
     title="Masterpiece Game API Server",
@@ -23,6 +23,10 @@ app = FastAPI(
 
 app.include_router(dice.router)
 app.include_router(users.router)
+
+DB = init_db()
+RESOURCES = init_resources()
+load_db(DB, RESOURCES)
 
 
 @app.get("/", tags=["Health"])

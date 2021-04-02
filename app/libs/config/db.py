@@ -4,6 +4,7 @@ import requests
 import pprint
 import uuid
 
+from app import main
 from app.libs.utils.classes import (
     User, Painting, Transaction
 )
@@ -63,24 +64,20 @@ def init_resources():
     return db
 
 
-DB = init_db()
-RESOURCES = init_resources()
-
 ##############################################
 
 
 def post_to_db(table: str, object_to_post, store_key):
-    DB = read_db()
-    if stringify_for_json(store_key) in DB[table]:
-        return DB, 409
+    if stringify_for_json(store_key) in main.DB[table]:
+        return main.DB, 409
 
     store_key = stringify_for_json(store_key)
-    DB[table][store_key] = {}
+    main.DB[table][store_key] = {}
     for item in object_to_post:
-        DB[table][store_key][stringify_for_json(
+        main.DB[table][store_key][stringify_for_json(
             item[0])] = stringify_for_json(item[1])
 
-    update_db(DB)
+    update_db(main.DB)
     return DB, 201
 
 
@@ -89,6 +86,18 @@ def update_db(db_obj):
         json.dump(db_obj, dbf)
         dbf.close()
     return
+
+
+def delete_from_db(table: str, store_key):
+    if stringify_for_json(store_key) not in main.DB[table]:
+        return "Record not found", 404
+
+    store_key = stringify_for_json(store_key)
+    try:
+        main.DB[table].pop(store_key)
+    except:
+        return f"Error in deleting {store_key}", 500
+    return "Success", 201
 
 
 def read_db():
@@ -122,10 +131,8 @@ def load_db(db, resources):
     return
 
 
-load_db(DB, RESOURCES)
-
 ##############################################
 
 
 def fetch_paintings_from_db():
-    return RESOURCES['art']
+    return main.RESOURCES['art']
