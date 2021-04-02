@@ -78,7 +78,7 @@ def post_to_db(table: str, object_to_post, store_key):
             item[0])] = stringify_for_json(item[1])
 
     update_db(main.DB)
-    return DB, 201
+    return main.DB[table][store_key], 201
 
 
 def update_db(db_obj):
@@ -110,9 +110,9 @@ def read_db():
 
 
 def stringify_for_json(item):
-    if not isinstance(item, str):
+    if not isinstance(item, (str, int, list)):
         item = str(item)
-    item.replace("'", '"')
+        item.replace("'", '"')
     return item
 
 ##############################################

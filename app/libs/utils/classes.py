@@ -15,11 +15,11 @@ class User(BaseModel):
     uuid: Optional[str] = uuid.uuid4()
     name: str
     character: str
-    character_id: int
-    current_position: int = 0
-    current_roll: int = 0
+    character_id: Optional[str] = 'z0'
+    current_position: Optional[int] = 0
+    current_roll: Optional[int] = 0
     paintings: Optional[list] = []
-    current_cash: int = 0
+    current_cash: Optional[int] = 0
 
 
 class Transaction(BaseModel):

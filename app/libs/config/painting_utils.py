@@ -22,9 +22,9 @@ VALUES = [
 
 def set_painting_values(num_values=24):
     new_list = VALUES.copy()
-    needed_items = num_values - len(new_list) - 1
 
     # Add [at least] one more forgery
+    needed_items = num_values - len(new_list) - 1
     new_list.append(0)
 
     rand_indexes = [random.randint(0, 15) for _ in range(needed_items)]
