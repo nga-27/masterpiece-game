@@ -11,8 +11,10 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.dependencies import metadata_tags
 
-from app.routers import dice, users
-from app.libs.config.db import init_db, init_resources, fetch_paintings_from_db, load_db
+from app.routers import dice, users, board
+from app.libs.config.db import (
+    init_db, init_resources, fetch_paintings_from_db, load_db, delete_from_db
+)
 
 app = FastAPI(
     title="Masterpiece Game API Server",
@@ -23,6 +25,7 @@ app = FastAPI(
 
 app.include_router(dice.router)
 app.include_router(users.router)
+app.include_router(board.router)
 
 DB = init_db()
 RESOURCES = init_resources()
@@ -32,6 +35,23 @@ load_db(DB, RESOURCES)
 @app.get("/", tags=["Health"])
 def check_heartbeat():
     return {"hello there": "from Masterpiece"}
+
+
+@app.post("/new_game", tags=["Health"])
+def start_new_game():
+    users = list(DB['users']).copy()
+    for user in users:
+        res, code = delete_from_db('users', user)
+        if code != 201:
+            raise HTTPException(status_code=code, detail={"value": res})
+    paintings = list(DB['paintings']).copy()
+    for painting in paintings:
+        res, code = delete_from_db('paintings', painting)
+        if code != 201:
+            raise HTTPException(status_code=code, detail={"value": res})
+
+    load_db(DB, RESOURCES)
+    return {"value": "success"}
 
 
 @app.get("/fetch_paintings", tags=["Health"])

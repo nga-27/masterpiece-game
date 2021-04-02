@@ -3,7 +3,8 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.libs.utils.classes import User, NewPosition
 from app.libs.config.users import (
-    get_users, add_user, get_characters, remove_user, user_move_piece
+    get_users, add_user, get_characters, remove_user, user_move_piece,
+    pick_starting_position
 )
 
 router = APIRouter(
@@ -42,7 +43,7 @@ def get_character_list():
 #####################################
 
 
-@router.patch("/update_position/", tags=["Users"], status_code=201)
+@router.patch("/update_position", tags=["Users"], status_code=201)
 def update_user_position(new_position: NewPosition):
     name = new_position.name
     roll = new_position.roll_value
@@ -54,3 +55,16 @@ def update_user_position(new_position: NewPosition):
         return res
     raise HTTPException(status_code=400, detail={
                         "value": "Badly formed patch."})
+
+
+@router.patch("/start_position", tags=["Users"], status_code=201)
+def add_user_starter_position(new_position: NewPosition):
+    name = new_position.name
+    position = new_position.position
+    if (position >= 0) and name:
+        res, code = pick_starting_position(name, position)
+        if code != 201:
+            raise HTTPException(status_code=code, detail=res['value'])
+        return res
+    raise HTTPException(status_code=400, detail={
+                        "value": "Badly formed start position."})

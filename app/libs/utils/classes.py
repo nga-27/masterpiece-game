@@ -19,7 +19,7 @@ class User(BaseModel):
     current_position: Optional[int] = 0
     current_roll: Optional[int] = 0
     paintings: Optional[list] = []
-    current_cash: Optional[int] = 0
+    current_cash: Optional[int] = 1500000
 
 
 class Transaction(BaseModel):
@@ -33,3 +33,4 @@ class NewPosition(BaseModel):
     name: str
     roll_value: int
     move_direction: str
+    position: int

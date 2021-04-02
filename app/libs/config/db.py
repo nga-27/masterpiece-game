@@ -118,10 +118,16 @@ def delete_from_db(table: str, store_key):
     return "Success", 201
 
 
-def get_from_db(table: str, store_key):
-    if stringify_for_json(store_key) not in main.DB[table]:
+def get_from_db(table: str, store_key, resources=False):
+    if resources:
+        db = main.RESOURCES[table]
+    else:
+        db = main.DB[table]
+    if store_key == '*':
+        return db, 200
+    if stringify_for_json(store_key) not in db:
         return "Record not found", 404
-    return main.DB[table][store_key], 200
+    return db[store_key], 200
 
 
 def patch_to_db(table: str, object_to_patch, store_key):
