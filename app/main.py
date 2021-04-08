@@ -11,7 +11,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.dependencies import metadata_tags
 
-from app.routers import dice, users, board
+from app.routers import dice, users, board, paintings
 from app.libs.config.db import (
     init_db, init_resources, fetch_paintings_from_db, load_db, delete_from_db
 )
@@ -26,6 +26,7 @@ app = FastAPI(
 app.include_router(dice.router)
 app.include_router(users.router)
 app.include_router(board.router)
+app.include_router(paintings.router)
 
 DB = init_db()
 RESOURCES = init_resources()
@@ -49,6 +50,8 @@ def start_new_game():
         res, code = delete_from_db('paintings', painting)
         if code != 201:
             raise HTTPException(status_code=code, detail={"value": res})
+
+    DB['painting_info']['count'] = 0
 
     load_db(DB, RESOURCES)
     return {"value": "success"}

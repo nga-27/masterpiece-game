@@ -17,3 +17,9 @@ def get_users_on_board():
             "value": board[users[user]['current_position']]['value']
         }
     return {"value": board_obj}, 200
+
+
+def get_board_types():
+    type_obj = {}
+    types, code = get_from_db('game_board', 'types', resources=True)
+    return {"value": types}, code

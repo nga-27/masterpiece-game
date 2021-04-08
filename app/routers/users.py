@@ -4,7 +4,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from app.libs.utils.classes import User, NewPosition
 from app.libs.config.users import (
     get_users, add_user, get_characters, remove_user, user_move_piece,
-    pick_starting_position
+    pick_starting_position, update_paintings_cash
 )
 
 router = APIRouter(
@@ -54,7 +54,7 @@ def update_user_position(new_position: NewPosition):
             raise HTTPException(status_code=code, detail=res['value'])
         return res
     raise HTTPException(status_code=400, detail={
-                        "value": "Badly formed patch."})
+                        "value": "Badly formed update_user_position patch."})
 
 
 @router.patch("/start_position", tags=["Users"], status_code=201)
@@ -68,3 +68,11 @@ def add_user_starter_position(new_position: NewPosition):
         return res
     raise HTTPException(status_code=400, detail={
                         "value": "Badly formed start position."})
+
+
+@router.patch("/update_holdings", tags=["Users"], status_code=201)
+def update_user_holdings(user: User):
+    name = user.name
+    paintings = user.paintings
+    cash_change = user.current_cash
+    update_paintings_cash(name, paintings, cash_change)

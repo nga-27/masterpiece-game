@@ -22,6 +22,7 @@ def init_db_tables():
     db['users'] = {}
     db['transactions'] = []
     db['paintings'] = {}
+    db['painting_info'] = {'count': 0}
     with open(DB_PATH, 'w') as dbf:
         json.dump(db, dbf)
         dbf.close()
@@ -95,6 +96,13 @@ def post_to_db(table: str, object_to_post, store_key, patch=False):
     if stringify_for_json(store_key) in main.DB[table] and not patch:
         return "Record already exists", 409
 
+    if store_key == '*':
+        for item in object_to_post:
+            main.DB[table][stringify_for_json(
+                item[0])] = stringify_for_json(item[1])
+        update_db(main.DB)
+        return main.DB[table], 201
+
     store_key = stringify_for_json(store_key)
     main.DB[table][store_key] = {}
     for item in object_to_post:
@@ -131,7 +139,7 @@ def get_from_db(table: str, store_key, resources=False):
 
 
 def patch_to_db(table: str, object_to_patch, store_key):
-    if stringify_for_json(store_key) not in main.DB[table]:
+    if stringify_for_json(store_key) not in main.DB[table] and store_key != '*':
         return "Record not found", 404
     return post_to_db(table, object_to_patch, store_key, patch=True)
 

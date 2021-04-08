@@ -41,3 +41,15 @@ def shuffle_list(ordered_list: list):
         shuffled.append(ordered_list.pop(index))
 
     return shuffled
+
+
+def pop_next_painting():
+    from .db import patch_to_db, get_from_db
+    painting_id, code = get_from_db('painting_info', 'count')
+    paintings, code = get_from_db('paintings', '*')
+    next_painting = {}
+    for i, title in enumerate(paintings):
+        if i == painting_id:
+            next_painting = paintings[title]
+    _, _ = patch_to_db('painting_info', [('count', painting_id + 1)], '*')
+    return {"value": next_painting}, 200

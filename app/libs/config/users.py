@@ -3,7 +3,7 @@ import uuid
 from app import main
 
 from app.libs.config.db import post_to_db, delete_from_db, patch_to_db, get_from_db
-from app.libs.utils.classes import User, NewPosition
+from app.libs.utils.classes import User, NewPosition, Painting
 from app.libs.actions.dice import new_roll_position
 
 
@@ -97,3 +97,7 @@ def pick_starting_position(name: str, position: int):
     new_user = map_to_user(user)
     res, code = patch_to_db('users', new_user, name)
     return {"value": res}, code
+
+
+def update_paintings_cash(name: str, painting: Painting, cash_change: int):
+    print(name, painting, cash_change)
