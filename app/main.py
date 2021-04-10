@@ -11,7 +11,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from app.dependencies import metadata_tags
 
-from app.routers import dice, users, board, paintings
+from app.routers import dice, users, board, actions
 from app.libs.config.db import (
     init_db, init_resources, fetch_paintings_from_db, load_db, delete_from_db
 )
@@ -26,7 +26,7 @@ app = FastAPI(
 app.include_router(dice.router)
 app.include_router(users.router)
 app.include_router(board.router)
-app.include_router(paintings.router)
+app.include_router(actions.router)
 
 DB = init_db()
 RESOURCES = init_resources()

@@ -7,8 +7,13 @@ from app.libs.utils.classes import User, NewPosition, Painting
 from app.libs.actions.dice import new_roll_position
 
 
-def get_users():
-    return main.DB.get('users', 'none')
+def get_users(hide_actual=False):
+    data = main.DB.get('users', 'none')
+    if hide_actual:
+        for player in data:
+            for i in range(len(data[player]['paintings'])):
+                data[player]['paintings'][i].pop('actual_value')
+    return data
 
 
 def add_user(user: User):
@@ -100,4 +105,9 @@ def pick_starting_position(name: str, position: int):
 
 
 def update_paintings_cash(name: str, painting: Painting, cash_change: int):
-    print(name, painting, cash_change)
+    new_entry, _ = get_from_db('users', name)
+    if len(painting) != 0:
+        new_entry['paintings'].append(painting[0])
+    new_entry['current_cash'] = new_entry['current_cash'] + cash_change
+    res, code = patch_to_db('users', new_entry, name)
+    return {"value": res}, code

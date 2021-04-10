@@ -8,7 +8,7 @@ from app import main
 from app.libs.utils.classes import (
     User, Painting, Transaction
 )
-from .painting_utils import set_painting_values
+from .actions import set_painting_values
 
 DB_DIR = os.path.join("app", "db")
 DB_PATH = os.path.join(DB_DIR, "db.json")
@@ -105,9 +105,14 @@ def post_to_db(table: str, object_to_post, store_key, patch=False):
 
     store_key = stringify_for_json(store_key)
     main.DB[table][store_key] = {}
-    for item in object_to_post:
-        main.DB[table][store_key][stringify_for_json(
-            item[0])] = stringify_for_json(item[1])
+    if isinstance(object_to_post, dict):
+        for key in object_to_post:
+            main.DB[table][store_key][key] = stringify_for_json(
+                object_to_post[key])
+    else:
+        for item in object_to_post:
+            main.DB[table][store_key][stringify_for_json(
+                item[0])] = stringify_for_json(item[1])
 
     update_db(main.DB)
     return main.DB[table][store_key], 201

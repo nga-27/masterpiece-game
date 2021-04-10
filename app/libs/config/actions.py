@@ -1,5 +1,7 @@
 import random
 
+from app.libs.utils.classes import Painting
+
 VALUES = [
     1000000,
     750000,
@@ -53,3 +55,16 @@ def pop_next_painting():
             next_painting = paintings[title]
     _, _ = patch_to_db('painting_info', [('count', painting_id + 1)], '*')
     return {"value": next_painting}, 200
+
+
+def sell_painting_for_cash(painting: Painting, name: str):
+    from .db import patch_to_db, get_from_db
+    player, _ = get_from_db('users', name)
+    index_to_pop = 0
+    for i, artwork in enumerate(player['paintings']):
+        if artwork['id'] == painting.id:
+            index_to_pop = i
+            break
+    item = player['paintings'].pop(index_to_pop)
+    res, _ = patch_to_db('users', player, name)
+    return item['actual_value']

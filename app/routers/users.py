@@ -25,6 +25,14 @@ def post_user(user: User):
     return res
 
 
+@router.get("/{name}", tags=["Users"])
+def get_users_all(name: str):
+    users = get_users()
+    if name in users:
+        return {"value": users[name]}, 200
+    return {"value": None}, 404
+
+
 @router.delete("/{name}", tags=["Users"], status_code=201)
 def delete_user(name: str):
     res, code = remove_user(name)
@@ -75,4 +83,7 @@ def update_user_holdings(user: User):
     name = user.name
     paintings = user.paintings
     cash_change = user.current_cash
-    update_paintings_cash(name, paintings, cash_change)
+    res, code = update_paintings_cash(name, paintings, cash_change)
+    if code != 201:
+        raise HTTPException(status_code=code, detail=res['value'])
+    return res
