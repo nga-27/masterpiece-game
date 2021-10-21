@@ -28,7 +28,8 @@ VERSION = '0.0.1'
 REQUIRES = [
     "fastapi==0.63.0",
     "uvicorn==0.13.4",
-    "requests==2.25"
+    "requests==2.25",
+    "pillow==8.1.2"
 ]
 
 REQUIRES_DEV = [

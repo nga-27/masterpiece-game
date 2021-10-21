@@ -130,6 +130,7 @@ dmypy.json
 
 # vscode
 .vscode
+.DS_Store
 
 # App-specific
 app/db

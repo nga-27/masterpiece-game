@@ -10,3 +10,5 @@ Note: if using `zsh`, add single quotes around installs: `pip install '.'`
 READY!
 
 Server runs at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+[Actual Masterpiece Game Rules](https://betterprogramming.pub/how-to-build-a-docker-compose-app-for-a-raspberry-pi-7d7003b4cbc)
