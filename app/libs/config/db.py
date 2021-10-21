@@ -169,3 +169,6 @@ def load_db(db, resources):
 
 def fetch_paintings_from_db():
     return main.RESOURCES['art']
+
+def fetch_characters_from_db():
+    return main.RESOURCES['characters']

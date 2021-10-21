@@ -13,7 +13,8 @@ from app.dependencies import metadata_tags
 
 from app.routers import dice, users, board, actions
 from app.libs.config.db import (
-    init_db, init_resources, fetch_paintings_from_db, load_db, delete_from_db
+    init_db, init_resources, fetch_paintings_from_db, load_db, delete_from_db,
+    fetch_characters_from_db
 )
 
 app = FastAPI(
@@ -60,6 +61,11 @@ def start_new_game():
 @app.get("/fetch_paintings", tags=["Health"])
 def fetch_paintings():
     return fetch_paintings_from_db()
+
+
+@app.get("/fetch_characters", tags=["Health"])
+def fetch_characters():
+    return fetch_characters_from_db()
 
 
 # @app.get("/dl", tags=["Health"])
